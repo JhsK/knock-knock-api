@@ -1,6 +1,5 @@
 # dependencies
 node_modules/
-/dist
 dist/
 
 # IDE
@@ -49,3 +48,4 @@ yarn-error.log
 build/config\.gypi
 
 .npmrc
+.env
