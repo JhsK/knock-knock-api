@@ -7,6 +7,7 @@ import { ConfigModule } from '@nestjs/config';
 import { KakaoService } from './auth/kakao.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeORMConfig } from './configs/typeorm.config';
+import { JobApplicationModule } from './job-application/job-application.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { typeORMConfig } from './configs/typeorm.config';
     TypeOrmModule.forRoot(typeORMConfig),
     UsersModule,
     AuthModule,
+    JobApplicationModule,
   ],
   controllers: [AppController],
   providers: [AppService, KakaoService],
