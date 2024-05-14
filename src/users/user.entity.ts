@@ -1,3 +1,4 @@
+import { Bookmark } from 'src/bookmark/bookmark.entity';
 import { JobApplication } from 'src/job-application/job-application.entity';
 import { BaseEntity, Column, Entity, OneToMany, PrimaryColumn } from 'typeorm';
 
@@ -14,4 +15,7 @@ export class User extends BaseEntity {
 
   @OneToMany(() => JobApplication, (jobApplication) => jobApplication.user)
   jobApplications: JobApplication[];
+
+  @OneToMany(() => Bookmark, (bookmark) => bookmark.user)
+  bookmarks: Bookmark[];
 }

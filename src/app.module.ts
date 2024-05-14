@@ -8,6 +8,7 @@ import { KakaoService } from './auth/kakao.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeORMConfig } from './configs/typeorm.config';
 import { JobApplicationModule } from './job-application/job-application.module';
+import { BookmarkModule } from './bookmark/bookmark.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { JobApplicationModule } from './job-application/job-application.module';
     UsersModule,
     AuthModule,
     JobApplicationModule,
+    BookmarkModule,
   ],
   controllers: [AppController],
   providers: [AppService, KakaoService],
