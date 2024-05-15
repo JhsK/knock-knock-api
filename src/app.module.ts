@@ -1,25 +1,22 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { UsersModule } from './user/user.module';
-import { AuthModule } from './auth/auth.module';
-import { ConfigModule } from '@nestjs/config';
-import { KakaoService } from './auth/kakao.service';
+import { BookmarkModule } from './bookmark/bookmark.module';
+import { JobApplicationModule } from './job-application/job-application.module';
+import { UserModule } from './user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeORMConfig } from './configs/typeorm.config';
-import { JobApplicationModule } from './job-application/job-application.module';
-import { BookmarkModule } from './bookmark/bookmark.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
     TypeOrmModule.forRoot(typeORMConfig),
-    UsersModule,
-    AuthModule,
+    UserModule,
     JobApplicationModule,
     BookmarkModule,
   ],
   controllers: [AppController],
-  providers: [AppService, KakaoService],
+  providers: [AppService],
 })
 export class AppModule {}

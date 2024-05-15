@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { KakaoLoginDto } from './dto/kakao/kakao-login.dto';
-import { KakaoToken } from './types/kakao';
+import { KakaoLoginDto } from '../dto/kakao/kakao-login.dto';
+import { KakaoToken, KakaoUser } from '../types/kakao';
 
 @Injectable()
 export class KakaoService {
@@ -19,6 +19,23 @@ export class KakaoService {
           redirect_uri: process.env.KAKAO_REDIRECT_URI,
           code,
         }).toString(),
+      });
+
+      const data = await response.json();
+      return data;
+    } catch (err) {
+      throw new BadRequestException();
+    }
+  }
+
+  async getKakaoUser(accessToken: string): Promise<KakaoUser> {
+    try {
+      const response = await fetch('https://kapi.kakao.com/v2/user/me', {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Content-type': 'application/x-www-form-urlencoded;charset=utf-8',
+        },
+        method: 'GET',
       });
 
       const data = await response.json();

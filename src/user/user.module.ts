@@ -1,12 +1,22 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmExModule } from 'src/typeorm-ex.module';
 import { UserController } from './user.controller';
-import { UserService } from './user.service';
-import { UserRepository } from './user.repository';
+import { UserService } from './services/user.service';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { User } from './user.entity';
+import { OAuthService } from './services/oauth.service';
+import { KakaoService } from './services/kakao.service';
+import { GoogleService } from './services/google.service';
+import { NaverService } from './services/naver.service';
 
 @Module({
-  imports: [TypeOrmExModule.forCustomRepository([UserRepository])],
+  imports: [TypeOrmModule.forFeature([User])],
   controllers: [UserController],
-  providers: [UserService],
+  providers: [
+    UserService,
+    OAuthService,
+    KakaoService,
+    GoogleService,
+    NaverService,
+  ],
 })
-export class UsersModule {}
+export class UserModule {}
