@@ -1,7 +1,7 @@
 export enum SocialEnum {
-  kakao,
-  naver,
-  google,
+  kakao = 'kakao',
+  naver = 'naver',
+  google = 'google',
 }
 
 export interface CreateUser {

@@ -1,12 +1,12 @@
-import { Injectable } from '@nestjs/common';
-import { KakaoService } from './kakao.service';
-import { GoogleService } from './google.service';
-import { NaverService } from './naver.service';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from '../user.entity';
 import { Repository } from 'typeorm';
-import { KakaoUser } from '../types/kakao';
+import { KakaoLoginDto } from '../dto/kakao/kakao-login.dto';
 import { SocialEnum } from '../types/user';
+import { User } from '../user.entity';
+import { GoogleService } from './google.service';
+import { KakaoService } from './kakao.service';
+import { NaverService } from './naver.service';
 
 @Injectable()
 export class OAuthService {
@@ -19,10 +19,20 @@ export class OAuthService {
     private readonly userRepository: Repository<User>,
   ) {}
 
-  async createKakaoUser(kakaoUser: KakaoUser) {
-    const { id, connected_at, properties } = kakaoUser;
+  async createKakaoUser(KakaoLoginDto: KakaoLoginDto) {
+    const kakaoToken = await this.kakaoService.getKakaoToken(KakaoLoginDto);
+    const { id, connected_at, properties } =
+      await this.kakaoService.getKakaoUser(kakaoToken.access_token);
+
+    if (!id || !properties) {
+      throw new NotFoundException();
+    }
+
+    const socialId = String(id);
+    const socialType = SocialEnum.kakao;
+
     const user = await this.userRepository.findOne({
-      where: { socialId: id, socialType: SocialEnum.kakao },
+      where: { socialId, socialType },
     });
 
     if (user) {
@@ -31,8 +41,8 @@ export class OAuthService {
 
     const createUser = await this.userRepository.create({
       nickname: properties.nickname,
-      socialId: id,
-      socialType: SocialEnum.kakao,
+      socialId,
+      socialType,
       registerAt: connected_at,
     });
 
