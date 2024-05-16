@@ -15,6 +15,18 @@ export class Bookmark extends BaseEntity {
   @Column({ type: 'date' })
   deadline: string;
 
+  @Column()
+  url: string;
+
+  @Column()
+  position: string;
+
+  @Column()
+  location: string;
+
+  @Column()
+  workExperience: string;
+
   @ManyToOne(() => User, (user) => user.bookmarks)
   user: User;
 }
