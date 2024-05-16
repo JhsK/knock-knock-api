@@ -47,7 +47,11 @@ export class OAuthService {
     });
 
     await this.userRepository.save(createUser);
-
-    return createUser;
+    return {
+      accessToken: kakaoToken.access_token,
+      accessToeknExpiresAt: kakaoToken.expires_at,
+      refreshToken: kakaoToken.refresh_token,
+      refreshTokenExpiresAt: kakaoToken.refresh_token_expires_in,
+    };
   }
 }

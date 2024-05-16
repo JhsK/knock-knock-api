@@ -19,8 +19,8 @@ export class UserController {
   @Post('/kakao-login')
   @UsePipes(ValidationPipe)
   async postKakaoLogin(@Body() body: KakaoLoginDto) {
-    const user = await this.oauthService.createKakaoUser(body);
+    const tokens = await this.oauthService.createKakaoUser(body);
 
-    return user;
+    return tokens;
   }
 }
