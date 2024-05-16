@@ -24,7 +24,7 @@ export class Bookmark extends BaseEntity {
   @Column()
   location: string;
 
-  @Column()
+  @Column({ name: 'work_experience' })
   workExperience: string;
 
   @ManyToOne(() => User, (user) => user.bookmarks)
