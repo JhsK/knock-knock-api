@@ -49,3 +49,6 @@ build/config\.gypi
 
 .npmrc
 .env
+
+# docker mysql
+/mysql-data
