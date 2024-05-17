@@ -1,6 +1,6 @@
 import { IsNotEmpty } from 'class-validator';
 
-export class KakaoLoginDto {
+export class KakaoLoginRequest {
   @IsNotEmpty()
   code: string;
 }

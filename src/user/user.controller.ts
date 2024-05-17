@@ -6,8 +6,8 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { UserService } from './services/user.service';
-import { KakaoLoginDto } from './dto/kakao/kakao-login.dto';
 import { OAuthService } from './services/oauth.service';
+import { KakaoLoginRequest } from './dto/kakao/kakao-login.request';
 
 @Controller('user')
 export class UserController {
@@ -18,7 +18,7 @@ export class UserController {
 
   @Post('/kakao-login')
   @UsePipes(ValidationPipe)
-  async postKakaoLogin(@Body() body: KakaoLoginDto) {
+  async postKakaoLogin(@Body() body: KakaoLoginRequest) {
     const tokens = await this.oauthService.createKakaoUser(body);
 
     return tokens;

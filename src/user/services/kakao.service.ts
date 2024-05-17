@@ -1,11 +1,15 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { KakaoLoginDto } from '../dto/kakao/kakao-login.dto';
-import { KakaoToken, KakaoUser } from '../types/kakao';
+import { KakaoLoginRequest } from '../dto/kakao/kakao-login.request';
+import { OAuthAttributes } from '../interface/oauth.interface';
+import { OAuthTokenResponse } from '../dto/oauth/token.response';
+import { OAuthUserResponse } from '../dto/oauth/user.response';
 
 @Injectable()
-export class KakaoService {
-  async getKakaoToken(kakaoLoginDto: KakaoLoginDto): Promise<KakaoToken> {
-    const { code } = kakaoLoginDto;
+export class KakaoService implements OAuthAttributes<KakaoLoginRequest> {
+  async getToken(
+    kakaoLoginRequest: KakaoLoginRequest,
+  ): Promise<OAuthTokenResponse> {
+    const { code } = kakaoLoginRequest;
 
     try {
       const response = await fetch('https://kauth.kakao.com/oauth/token', {
@@ -28,7 +32,7 @@ export class KakaoService {
     }
   }
 
-  async getKakaoUser(accessToken: string): Promise<KakaoUser> {
+  async getUser(accessToken: string): Promise<OAuthUserResponse> {
     try {
       const response = await fetch('https://kapi.kakao.com/v2/user/me', {
         headers: {
