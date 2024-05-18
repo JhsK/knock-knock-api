@@ -8,9 +8,20 @@ import { GoogleService } from './services/google.service';
 import { NaverService } from './services/naver.service';
 import { OAuthService } from './services/oauth.service';
 import { OAuthFactory } from './oauth.factory';
+import { JwtModule } from '@nestjs/jwt';
+import { PassportModule } from '@nestjs/passport';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User])],
+  imports: [
+    TypeOrmModule.forFeature([User]),
+    PassportModule.register({ defaultStrategy: 'jwt' }),
+    JwtModule.register({
+      secret: process.env.JWT_SECRET,
+      signOptions: {
+        expiresIn: 60 * 6000,
+      },
+    }),
+  ],
   controllers: [UserController],
   providers: [
     UserService,

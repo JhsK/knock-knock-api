@@ -5,11 +5,13 @@ import { KakaoLoginRequest } from '../dto/kakao/kakao-login.request';
 import { OAuthFactory } from '../oauth.factory';
 import { SocialEnum } from '../types/user';
 import { User } from '../user.entity';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class OAuthService {
   constructor(
     private readonly oauthFactory: OAuthFactory,
+    private readonly jwtService: JwtService,
 
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
@@ -19,10 +21,10 @@ export class OAuthService {
     const kakaoService = await this.oauthFactory.createOAuthService('kakao');
     const kakaoToken = await kakaoService.getToken(kakaoLoginRequest);
 
-    const { nickname, registerdAt, socialId, type } =
+    const { nickname, registeredAt, socialId, type } =
       await kakaoService.getUser(kakaoToken.accessToken);
 
-    if (!registerdAt || !nickname) {
+    if (!registeredAt || !nickname) {
       throw new NotFoundException();
     }
 
@@ -34,22 +36,33 @@ export class OAuthService {
     });
 
     if (user) {
-      return user;
+      const payload = { userId: user.id, socialType };
+      const accessToken = await this.jwtService.signAsync(payload);
+      const refreshToken = await this.jwtService.signAsync(payload, {
+        expiresIn: '7d',
+      });
+
+      return { accessToken, refreshToken };
     }
 
     const createUser = await this.userRepository.create({
       nickname,
       socialId: socialIdAsString,
       socialType,
-      registerAt: registerdAt,
+      registerAt: registeredAt,
     });
 
     await this.userRepository.save(createUser);
+
+    const payload = { userId: createUser.id, socialType };
+    const accessToken = await this.jwtService.signAsync(payload);
+    const refreshToken = await this.jwtService.signAsync(payload, {
+      expiresIn: '7d',
+    });
+
     return {
-      accessToken: kakaoToken.accessToken,
-      accessToeknExpiresAt: kakaoToken.expiresAt,
-      refreshToken: kakaoToken.refreshToken,
-      refreshTokenExpiresAt: kakaoToken.refreshTokenExpiresAt,
+      accessToken,
+      refreshToken,
     };
   }
 }

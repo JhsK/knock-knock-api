@@ -3,6 +3,8 @@ import { KakaoLoginRequest } from '../dto/kakao/kakao-login.request';
 import { OAuthAttributes } from '../interface/oauth.interface';
 import { OAuthTokenResponse } from '../dto/oauth/token.response';
 import { OAuthUserResponse } from '../dto/oauth/user.response';
+import { KakaoTokenResponse } from '../dto/kakao/kakao-token.response';
+import { KakaoUserResponse } from '../dto/kakao/kakao-user.response';
 
 @Injectable()
 export class KakaoService implements OAuthAttributes<KakaoLoginRequest> {
@@ -10,7 +12,6 @@ export class KakaoService implements OAuthAttributes<KakaoLoginRequest> {
     kakaoLoginRequest: KakaoLoginRequest,
   ): Promise<OAuthTokenResponse> {
     const { code } = kakaoLoginRequest;
-
     try {
       const response = await fetch('https://kauth.kakao.com/oauth/token', {
         headers: {
@@ -25,8 +26,13 @@ export class KakaoService implements OAuthAttributes<KakaoLoginRequest> {
         }).toString(),
       });
 
-      const data = await response.json();
-      return data;
+      const data: KakaoTokenResponse = await response.json();
+      return {
+        accessToken: data.access_token,
+        expiresAt: data.expires_in,
+        refreshToken: data.refresh_token,
+        refreshTokenExpiresAt: data.refresh_token_expires_in,
+      };
     } catch (err) {
       throw new BadRequestException();
     }
@@ -42,8 +48,14 @@ export class KakaoService implements OAuthAttributes<KakaoLoginRequest> {
         method: 'GET',
       });
 
-      const data = await response.json();
-      return data;
+      const data: KakaoUserResponse = await response.json();
+
+      return {
+        nickname: data.kakao_account.profile.nickname,
+        registeredAt: data.connected_at,
+        socialId: data.id,
+        type: 'kakao',
+      };
     } catch (err) {
       throw new BadRequestException();
     }
