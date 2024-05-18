@@ -10,6 +10,7 @@ import { OAuthService } from './services/oauth.service';
 import { OAuthFactory } from './oauth.factory';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
+import { JwtStrategy } from './jwt.strategy';
 
 @Module({
   imports: [
@@ -30,6 +31,8 @@ import { PassportModule } from '@nestjs/passport';
     GoogleService,
     NaverService,
     OAuthFactory,
+    JwtStrategy,
   ],
+  exports: [JwtStrategy, PassportModule],
 })
 export class UserModule {}
