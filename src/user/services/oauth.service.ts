@@ -33,39 +33,42 @@ export class OAuthService {
     const socialIdAsString = String(socialId);
     const socialType = SocialEnum[type];
 
-    const user = await this.userRepository.findOne({
-      where: { socialId: socialIdAsString, socialType },
-    });
+    this.dataSource.transaction(async (manager) => {
+      const userRepository = manager.getRepository(User);
+      const user = await userRepository.findOne({
+        where: { socialId: socialIdAsString, socialType },
+      });
 
-    if (user) {
-      const payload = { userId: user.id, socialType };
+      if (user) {
+        const payload = { userId: user.id, socialType };
+        const accessToken = await this.jwtService.signAsync(payload);
+        const refreshToken = await this.jwtService.signAsync(payload, {
+          expiresIn: '7d',
+        });
+
+        return { accessToken, refreshToken };
+      }
+
+      const createUser = await userRepository.create({
+        nickname,
+        socialId: socialIdAsString,
+        socialType,
+        registerAt: registeredAt,
+      });
+
+      await this.userRepository.save(createUser);
+
+      const payload = { userId: createUser.id, socialType };
       const accessToken = await this.jwtService.signAsync(payload);
       const refreshToken = await this.jwtService.signAsync(payload, {
         expiresIn: '7d',
       });
 
-      return { accessToken, refreshToken };
-    }
-
-    const createUser = await this.userRepository.create({
-      nickname,
-      socialId: socialIdAsString,
-      socialType,
-      registerAt: registeredAt,
+      return {
+        accessToken,
+        refreshToken,
+      };
     });
-
-    await this.userRepository.save(createUser);
-
-    const payload = { userId: createUser.id, socialType };
-    const accessToken = await this.jwtService.signAsync(payload);
-    const refreshToken = await this.jwtService.signAsync(payload, {
-      expiresIn: '7d',
-    });
-
-    return {
-      accessToken,
-      refreshToken,
-    };
   }
 
   async createNaverUser(naverLoginRequest: NaverLoginRequest) {
