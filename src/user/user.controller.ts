@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  Logger,
   Param,
   Post,
   UseGuards,
@@ -15,6 +16,7 @@ import { AuthGuard } from '@nestjs/passport';
 
 @Controller('user')
 export class UserController {
+  private logger = new Logger('UserController');
   constructor(
     private readonly userService: UserService,
     private readonly oauthService: OAuthService,
@@ -23,9 +25,12 @@ export class UserController {
   @Post('/kakao-login')
   @UsePipes(ValidationPipe)
   async postKakaoLogin(@Body() body: KakaoLoginRequest) {
-    const tokens = await this.oauthService.createKakaoUser(body);
+    const token = await this.oauthService.createKakaoUser(body);
 
-    return tokens;
+    this.logger.verbose(
+      `사용자가 카카오 회원가입 또는 로그인을 진행하였습니다`,
+    );
+    return token;
   }
 
   @Get(':id')
