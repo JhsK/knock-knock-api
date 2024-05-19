@@ -1,7 +1,7 @@
 import { SocialEnum } from 'src/user/types/user';
 
 export interface OAuthUserResponse {
-  socialId: number;
+  socialId: number | string;
   registeredAt: string;
   nickname: string;
   email?: string;

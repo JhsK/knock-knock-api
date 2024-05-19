@@ -4,11 +4,11 @@ import { NaverService } from './services/naver.service';
 import { GoogleService } from './services/google.service';
 import { OAuthAttributes } from './interface/oauth.interface';
 import { KakaoLoginRequest } from './dto/kakao/kakao-login.request';
-import { SocialEnum } from './types/user';
+import { NaverLoginRequest } from './dto/naver/naver-login.request';
 
 type OAuthAttributesMap = {
   kakao: OAuthAttributes<KakaoLoginRequest>;
-  naver: OAuthAttributes<any>;
+  naver: OAuthAttributes<NaverLoginRequest>;
   google: OAuthAttributes<any>;
 };
 
@@ -20,16 +20,16 @@ export class OAuthFactory {
     private readonly googleService: GoogleService,
   ) {}
 
-  createOAuthService<T extends keyof typeof SocialEnum>(
+  createOAuthService<T extends keyof OAuthAttributesMap>(
     type: T,
   ): OAuthAttributesMap[T] {
     switch (type) {
       case 'kakao':
-        return this.kakaoService;
+        return this.kakaoService as OAuthAttributesMap[T];
       case 'naver':
-        return this.naverService;
+        return this.naverService as OAuthAttributesMap[T];
       case 'google':
-        return this.googleService;
+        return this.googleService as OAuthAttributesMap[T];
       default:
         throw new BadRequestException('Invalid OAuth type');
     }

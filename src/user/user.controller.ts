@@ -9,10 +9,11 @@ import {
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
-import { UserService } from './services/user.service';
-import { OAuthService } from './services/oauth.service';
-import { KakaoLoginRequest } from './dto/kakao/kakao-login.request';
 import { AuthGuard } from '@nestjs/passport';
+import { KakaoLoginRequest } from './dto/kakao/kakao-login.request';
+import { NaverLoginRequest } from './dto/naver/naver-login.request';
+import { OAuthService } from './services/oauth.service';
+import { UserService } from './services/user.service';
 
 @Controller('user')
 export class UserController {
@@ -29,6 +30,17 @@ export class UserController {
 
     this.logger.verbose(
       `사용자가 카카오 회원가입 또는 로그인을 진행하였습니다`,
+    );
+    return token;
+  }
+
+  @Post('/naver-login')
+  @UsePipes(ValidationPipe)
+  async postNaverLogin(@Body() body: NaverLoginRequest) {
+    const token = await this.oauthService.createNaverUser(body);
+
+    this.logger.verbose(
+      `사용자가 네이버 회원가입 또는 로그인을 진행하였습니다`,
     );
     return token;
   }
