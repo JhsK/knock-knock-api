@@ -7,6 +7,7 @@ import { NaverLoginRequest } from '../dto/naver/naver-login.request';
 import { OAuthFactory } from '../oauth.factory';
 import { SocialEnum } from '../types/user';
 import { User } from '../user.entity';
+import { GoogleLoginRequest } from '../dto/google/google-login.request';
 
 @Injectable()
 export class OAuthService {
@@ -117,5 +118,11 @@ export class OAuthService {
         refreshToken,
       };
     });
+  }
+
+  async createGoogleUser(googleLoginRequest: GoogleLoginRequest) {
+    const googleService = await this.oauthFactory.createOAuthService('google');
+    const googleToken = await googleService.getToken(googleLoginRequest);
+    console.log(googleToken);
   }
 }

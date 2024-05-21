@@ -5,11 +5,12 @@ import { GoogleService } from './services/google.service';
 import { OAuthAttributes } from './interface/oauth.interface';
 import { KakaoLoginRequest } from './dto/kakao/kakao-login.request';
 import { NaverLoginRequest } from './dto/naver/naver-login.request';
+import { GoogleLoginRequest } from './dto/google/google-login.request';
 
 type OAuthAttributesMap = {
   kakao: OAuthAttributes<KakaoLoginRequest>;
   naver: OAuthAttributes<NaverLoginRequest>;
-  google: OAuthAttributes<any>;
+  google: OAuthAttributes<GoogleLoginRequest>;
 };
 
 @Injectable()

@@ -34,7 +34,7 @@ export class KakaoService implements OAuthAttributes<KakaoLoginRequest> {
         refreshTokenExpiresAt: data.refresh_token_expires_in,
       };
     } catch (err) {
-      throw new BadRequestException();
+      throw new BadRequestException('카카오 API에서 문제가 발생하였습니다');
     }
   }
 
