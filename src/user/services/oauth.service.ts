@@ -121,8 +121,42 @@ export class OAuthService {
   }
 
   async createGoogleUser(googleLoginRequest: GoogleLoginRequest) {
-    const googleService = await this.oauthFactory.createOAuthService('google');
-    const googleToken = await googleService.getToken(googleLoginRequest);
-    console.log(googleToken);
+    const { id, name, accessToken, socialType } = googleLoginRequest;
+
+    return this.dataSource.transaction(async (manager) => {
+      const userRepository = manager.getRepository(User);
+      const user = await userRepository.findOne({
+        where: { socialId: id, socialType },
+      });
+
+      if (user) {
+        const payload = { userId: user.id, socialType };
+        const accessToken = await this.jwtService.signAsync(payload);
+        const refreshToken = await this.jwtService.signAsync(payload, {
+          expiresIn: '7d',
+        });
+
+        return { accessToken, refreshToken };
+      }
+      const createUser = await userRepository.create({
+        nickname: name,
+        socialId: id,
+        socialType,
+        registerAt: new Date().toString(),
+      });
+
+      await userRepository.save(createUser);
+
+      const payload = { userId: createUser.id, socialType };
+      const accessToken = await this.jwtService.signAsync(payload);
+      const refreshToken = await this.jwtService.signAsync(payload, {
+        expiresIn: '7d',
+      });
+
+      return {
+        accessToken,
+        refreshToken,
+      };
+    });
   }
 }

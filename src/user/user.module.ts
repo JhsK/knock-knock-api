@@ -12,12 +12,13 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './jwt.strategy';
 import { ConfigModule } from '@nestjs/config';
+import { GoogleStrategy } from './google.strategy';
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
     TypeOrmModule.forFeature([User]),
-    PassportModule.register({ defaultStrategy: 'jwt' }),
+    PassportModule.register({ defaultStrategy: ['jwt', 'google'] }),
     JwtModule.register({
       secret: process.env.JWT_SECRET,
       signOptions: {
@@ -34,6 +35,7 @@ import { ConfigModule } from '@nestjs/config';
     NaverService,
     OAuthFactory,
     JwtStrategy,
+    GoogleStrategy,
   ],
   exports: [JwtStrategy, PassportModule],
 })
