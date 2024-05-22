@@ -14,12 +14,15 @@ import { JwtStrategy } from './jwt.strategy';
 import { ConfigModule } from '@nestjs/config';
 import { GoogleStrategy } from './google.strategy';
 import { KakaoStrategy } from './kakao.strategy';
+import { NaverStrategy } from './naver.strategy';
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
     TypeOrmModule.forFeature([User]),
-    PassportModule.register({ defaultStrategy: ['jwt', 'kakao', 'google'] }),
+    PassportModule.register({
+      defaultStrategy: ['jwt', 'kakao', 'naver', 'google'],
+    }),
     JwtModule.register({
       secret: process.env.JWT_SECRET,
       signOptions: {
@@ -38,6 +41,7 @@ import { KakaoStrategy } from './kakao.strategy';
     JwtStrategy,
     GoogleStrategy,
     KakaoStrategy,
+    NaverStrategy,
   ],
   exports: [JwtStrategy, PassportModule],
 })
