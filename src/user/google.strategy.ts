@@ -28,6 +28,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
       name: displayName,
       accessToken,
       socialType: SocialEnum.google,
+      registerAt: new Date().toString(),
     });
   }
 }

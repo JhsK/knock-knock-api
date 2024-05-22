@@ -21,23 +21,12 @@ export class OAuthService {
   ) {}
 
   async createKakaoUser(kakaoLoginRequest: KakaoLoginRequest) {
-    const kakaoService = await this.oauthFactory.createOAuthService('kakao');
-    const kakaoToken = await kakaoService.getToken(kakaoLoginRequest);
-
-    const { nickname, registeredAt, socialId, type } =
-      await kakaoService.getUser(kakaoToken.accessToken);
-
-    if (!registeredAt || !nickname) {
-      throw new NotFoundException();
-    }
-
-    const socialIdAsString = String(socialId);
-    const socialType = SocialEnum[type];
+    const { id, accessToken, name, socialType, registerAt } = kakaoLoginRequest;
 
     this.dataSource.transaction(async (manager) => {
       const userRepository = manager.getRepository(User);
       const user = await userRepository.findOne({
-        where: { socialId: socialIdAsString, socialType },
+        where: { socialId: id, socialType },
       });
 
       if (user) {
@@ -51,10 +40,10 @@ export class OAuthService {
       }
 
       const createUser = await userRepository.create({
-        nickname,
-        socialId: socialIdAsString,
+        nickname: name,
+        socialId: id,
         socialType,
-        registerAt: registeredAt,
+        registerAt,
       });
 
       await this.userRepository.save(createUser);
@@ -121,7 +110,8 @@ export class OAuthService {
   }
 
   async createGoogleUser(googleLoginRequest: GoogleLoginRequest) {
-    const { id, name, accessToken, socialType } = googleLoginRequest;
+    const { id, name, accessToken, socialType, registerAt } =
+      googleLoginRequest;
 
     return this.dataSource.transaction(async (manager) => {
       const userRepository = manager.getRepository(User);
@@ -142,7 +132,7 @@ export class OAuthService {
         nickname: name,
         socialId: id,
         socialType,
-        registerAt: new Date().toString(),
+        registerAt,
       });
 
       await userRepository.save(createUser);

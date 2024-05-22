@@ -19,3 +19,20 @@ export interface KakaoUser {
     };
   };
 }
+
+export interface KakaoUserProfile {
+  provider: 'kakao';
+  id: number;
+  username: string;
+  displayName: string;
+  _raw: string;
+  _json: {
+    id: number;
+    connected_at: string;
+    properties: { nickname: string };
+    kakao_account: {
+      profile_nickname_needs_agreement: boolean;
+      profile: object;
+    };
+  };
+}

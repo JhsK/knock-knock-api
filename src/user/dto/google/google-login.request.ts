@@ -1,4 +1,4 @@
-import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
+import { IsDateString, IsEnum, IsNotEmpty, IsString } from 'class-validator';
 import { SocialEnum } from 'src/user/types/user';
 
 export class GoogleLoginRequest {
@@ -17,4 +17,8 @@ export class GoogleLoginRequest {
   @IsNotEmpty()
   @IsEnum(SocialEnum)
   socialType: SocialEnum;
+
+  @IsNotEmpty()
+  @IsDateString()
+  registerAt: string;
 }

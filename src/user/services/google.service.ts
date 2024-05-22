@@ -1,9 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { GoogleLoginRequest } from '../dto/google/google-login.request';
+import { OAuthTokenResponse } from '../dto/oauth/token.response';
 import { OAuthUserResponse } from '../dto/oauth/user.response';
 import { OAuthAttributes } from '../interface/oauth.interface';
-import { OAuthTokenResponse } from '../dto/oauth/token.response';
-import { GoogleTokenResponse } from '../dto/google/google-token.response';
 
 @Injectable()
 export class GoogleService implements OAuthAttributes<GoogleLoginRequest> {
