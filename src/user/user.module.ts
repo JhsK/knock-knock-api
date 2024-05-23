@@ -10,11 +10,11 @@ import { OAuthService } from './services/oauth.service';
 import { OAuthFactory } from './oauth.factory';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
-import { JwtStrategy } from './jwt.strategy';
+import { JwtStrategy } from './strategy/jwt.strategy';
 import { ConfigModule } from '@nestjs/config';
-import { GoogleStrategy } from './google.strategy';
-import { KakaoStrategy } from './kakao.strategy';
-import { NaverStrategy } from './naver.strategy';
+import { GoogleStrategy } from './strategy/google.strategy';
+import { KakaoStrategy } from './strategy/kakao.strategy';
+import { NaverStrategy } from './strategy/naver.strategy';
 
 @Module({
   imports: [

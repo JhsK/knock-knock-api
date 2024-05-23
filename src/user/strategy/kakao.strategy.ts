@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-kakao';
-import { KakaoUserProfile } from './types/kakao';
-import { SocialEnum } from './types/user';
+import { KakaoUserProfile } from '../types/kakao';
+import { SocialEnum } from '../types/user';
 
 @Injectable()
 export class KakaoStrategy extends PassportStrategy(Strategy, 'kakao') {
