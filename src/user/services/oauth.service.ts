@@ -5,13 +5,11 @@ import { DataSource, Repository } from 'typeorm';
 import { GoogleLoginRequest } from '../dto/google/google-login.request';
 import { KakaoLoginRequest } from '../dto/kakao/kakao-login.request';
 import { NaverLoginRequest } from '../dto/naver/naver-login.request';
-import { OAuthFactory } from '../oauth.factory';
 import { User } from '../user.entity';
 
 @Injectable()
 export class OAuthService {
   constructor(
-    private readonly oauthFactory: OAuthFactory,
     private readonly jwtService: JwtService,
 
     @InjectRepository(User)
