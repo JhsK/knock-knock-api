@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy, VerifyCallback } from 'passport-google-oauth20';
 import { GoogleUserProfile } from '../types/google';
-import { SocialEnum } from '../types/user';
 
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
@@ -21,13 +20,13 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     profile: GoogleUserProfile,
     done: VerifyCallback,
   ): Promise<any> {
-    const { id, displayName } = profile;
+    const { id, displayName, provider } = profile;
 
     done(null, {
       id,
       name: displayName,
       accessToken,
-      socialType: SocialEnum.google,
+      provider,
       registerAt: new Date().toString(),
     });
   }

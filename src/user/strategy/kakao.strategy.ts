@@ -2,14 +2,13 @@ import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-kakao';
 import { KakaoUserProfile } from '../types/kakao';
-import { SocialEnum } from '../types/user';
 
 @Injectable()
 export class KakaoStrategy extends PassportStrategy(Strategy, 'kakao') {
   constructor() {
     super({
       clientID: process.env.KAKAO_CLIENT_ID,
-      clientSecret: process.env.KAKAO_SECRET_ID,
+      clientSecret: process.env.KAKAO_CLIENT_SECRET,
       callbackURL: process.env.KAKAO_REDIRECT_URI,
     });
   }
@@ -26,7 +25,7 @@ export class KakaoStrategy extends PassportStrategy(Strategy, 'kakao') {
       id,
       name: displayName,
       accessToken,
-      socialType: SocialEnum.kakao,
+      provider,
       registerAt: _json.connected_at,
     });
   }

@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-naver';
 import { NaverUserProfile } from '../types/naver';
-import { SocialEnum } from '../types/user';
 
 @Injectable()
 export class NaverStrategy extends PassportStrategy(Strategy, 'naver') {
@@ -25,7 +24,7 @@ export class NaverStrategy extends PassportStrategy(Strategy, 'naver') {
       id,
       name: displayName,
       accessToken,
-      socialType: SocialEnum.naver,
+      provider,
       registerAt: new Date().toString(),
     });
   }

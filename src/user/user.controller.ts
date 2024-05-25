@@ -11,34 +11,37 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 import { Response } from 'express';
 import { GetUser } from './decorator/get-user.decorator';
-import { GoogleLoginRequest } from './dto/google/google-login.request';
-import { KakaoLoginRequest } from './dto/kakao/kakao-login.request';
-import { NaverLoginRequest } from './dto/naver/naver-login.request';
-import { OAuthService } from './services/oauth.service';
-import { UserService } from './services/user.service';
+import { LoginRequest } from './dto/request/login.request';
+import { UserService } from './user.service';
+
+const REFRESH_TOKEN_EXPIRES_IN = 7 * 24 * 60 * 60 * 1000; // 7일
 
 @Controller('user')
 export class UserController {
   private logger = new Logger('UserController');
-  constructor(
-    private readonly userService: UserService,
-    private readonly oauthService: OAuthService,
-  ) {}
+  constructor(private readonly userService: UserService) {}
 
   @Get('/kakao-login/callback')
   @UseGuards(AuthGuard('kakao'))
   async kakaoCallback(
-    @GetUser() user: KakaoLoginRequest,
+    @GetUser() loignRequest: LoginRequest,
     @Res() res: Response,
   ) {
-    const userToken = await this.oauthService.createGoogleUser(user);
-    console.log('userToken', userToken);
+    const userToken = await this.userService.login(loignRequest);
 
     this.logger.verbose(
       `사용자가 카카오 회원가입 또는 로그인을 진행하였습니다`,
     );
 
-    return res.redirect('http://localhost:3000');
+    res.cookie('refreshToken', userToken.refreshToken, {
+      httpOnly: true,
+      secure: false, // https에서만 작동, 필요에 따라 false로 설정
+      maxAge: REFRESH_TOKEN_EXPIRES_IN,
+    });
+
+    return res.redirect(
+      `${process.env.SERVICE_URL}?accessToken=${userToken.accessToken}`,
+    );
   }
 
   @Get('/kakao-login')
@@ -49,17 +52,24 @@ export class UserController {
   @Get('/naver-login/callback')
   @UseGuards(AuthGuard('naver'))
   async naverCallback(
-    @GetUser() user: NaverLoginRequest,
+    @GetUser() loginRequest: LoginRequest,
     @Res() res: Response,
   ) {
-    const userToken = await this.oauthService.createNaverUser(user);
-    console.log('userToken', userToken);
+    const userToken = await this.userService.login(loginRequest);
 
     this.logger.verbose(
       `사용자가 네이버 회원가입 또는 로그인을 진행하였습니다`,
     );
 
-    return res.redirect('http://localhost:3000');
+    res.cookie('refreshToken', userToken.refreshToken, {
+      httpOnly: true,
+      secure: false, // https에서만 작동, 필요에 따라 false로 설정
+      maxAge: REFRESH_TOKEN_EXPIRES_IN,
+    });
+
+    return res.redirect(
+      `${process.env.SERVICE_URL}?accessToken=${userToken.accessToken}`,
+    );
   }
 
   @Get('/naver-login')
@@ -71,15 +81,22 @@ export class UserController {
   @UseGuards(AuthGuard('google'))
   @UsePipes(ValidationPipe)
   async googleLoginCallback(
-    @GetUser() user: GoogleLoginRequest,
+    @GetUser() loginRequest: LoginRequest,
     @Res() res: Response,
   ) {
-    const userToken = await this.oauthService.createGoogleUser(user);
-    console.log(userToken);
+    const userToken = await this.userService.login(loginRequest);
 
     this.logger.verbose(`사용자가 구글 회원가입 또는 로그인을 진행하였습니다`);
 
-    return res.redirect(`http://localhost:3000`);
+    res.cookie('refreshToken', userToken.refreshToken, {
+      httpOnly: true,
+      secure: false, // https에서만 작동, 필요에 따라 false로 설정
+      maxAge: REFRESH_TOKEN_EXPIRES_IN,
+    });
+
+    return res.redirect(
+      `${process.env.SERVICE_URL}?accessToken=${userToken.accessToken}`,
+    );
   }
 
   @Get('/google-login')

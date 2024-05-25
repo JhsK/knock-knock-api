@@ -2,14 +2,16 @@ import { Bookmark } from 'src/bookmark/bookmark.entity';
 import { JobApplication } from 'src/job-application/job-application.entity';
 import {
   BaseEntity,
+  Check,
   Column,
   Entity,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { SocialEnum } from './types/user';
+import { UserProvider } from './types/user';
 
 @Entity()
+@Check(`"provider" IN ('kakao', 'naver', 'google')`)
 export class User extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
@@ -17,11 +19,11 @@ export class User extends BaseEntity {
   @Column()
   nickname: string;
 
-  @Column({ name: 'social_id', type: 'varchar', length: 255 })
-  socialId: string;
+  @Column({ name: 'provider_id', type: 'varchar', length: 255 })
+  providerId: string;
 
-  @Column({ name: 'social_type', type: 'enum', enum: SocialEnum })
-  socialType: SocialEnum;
+  @Column({ name: 'provider' })
+  provider: UserProvider;
 
   @Column({ name: 'register_at', type: 'datetime' })
   registerAt: Date;
