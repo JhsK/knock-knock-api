@@ -7,6 +7,7 @@ import { BookmarkModule } from './bookmark/bookmark.module';
 import { typeORMConfig } from './configs/typeorm.config';
 import { UserModule } from './user/user.module';
 import { ApplicationModule } from './application/application.module';
+import { ApplicationStatusModule } from './application-status/application-status.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { ApplicationModule } from './application/application.module';
     UserModule,
     BookmarkModule,
     ApplicationModule,
+    ApplicationStatusModule,
   ],
   controllers: [AppController],
   providers: [AppService],

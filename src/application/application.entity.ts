@@ -1,3 +1,4 @@
+import { ApplicationStatus } from 'src/application-status/application-status.entity';
 import { User } from 'src/user/user.entity';
 import { BaseEntity, Column, Entity, ManyToOne, PrimaryColumn } from 'typeorm';
 
@@ -20,4 +21,10 @@ export class Application extends BaseEntity {
 
   @ManyToOne(() => User, (user) => user.applications)
   user: User;
+
+  @ManyToOne(
+    () => ApplicationStatus,
+    (applicationStatus) => applicationStatus.applications,
+  )
+  applicationStatus: ApplicationStatus;
 }

@@ -9,6 +9,7 @@ import {
 } from 'typeorm';
 import { UserProvider } from './types/user';
 import { Application } from 'src/application/application.entity';
+import { ApplicationStatus } from 'src/application-status/application-status.entity';
 
 @Entity()
 @Check(`"provider" IN ('kakao', 'naver', 'google')`)
@@ -33,4 +34,10 @@ export class User extends BaseEntity {
 
   @OneToMany(() => Bookmark, (bookmark) => bookmark.user)
   bookmarks: Bookmark[];
+
+  @OneToMany(
+    () => ApplicationStatus,
+    (applicationSatuses) => applicationSatuses.user,
+  )
+  applicationStatuses: ApplicationStatus[];
 }
