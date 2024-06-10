@@ -1,5 +1,4 @@
 import { Bookmark } from 'src/bookmark/bookmark.entity';
-import { JobApplication } from 'src/job-application/job-application.entity';
 import {
   BaseEntity,
   Check,
@@ -9,6 +8,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { UserProvider } from './types/user';
+import { Application } from 'src/application/application.entity';
 
 @Entity()
 @Check(`"provider" IN ('kakao', 'naver', 'google')`)
@@ -28,8 +28,8 @@ export class User extends BaseEntity {
   @Column({ name: 'register_at', type: 'datetime' })
   registerAt: Date;
 
-  @OneToMany(() => JobApplication, (jobApplication) => jobApplication.user)
-  jobApplications: JobApplication[];
+  @OneToMany(() => Application, (application) => application.user)
+  applications: Application[];
 
   @OneToMany(() => Bookmark, (bookmark) => bookmark.user)
   bookmarks: Bookmark[];

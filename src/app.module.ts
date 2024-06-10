@@ -5,16 +5,16 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { BookmarkModule } from './bookmark/bookmark.module';
 import { typeORMConfig } from './configs/typeorm.config';
-import { JobApplicationModule } from './job-application/job-application.module';
 import { UserModule } from './user/user.module';
+import { ApplicationModule } from './application/application.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
     TypeOrmModule.forRoot(typeORMConfig),
     UserModule,
-    JobApplicationModule,
     BookmarkModule,
+    ApplicationModule,
   ],
   controllers: [AppController],
   providers: [AppService],
