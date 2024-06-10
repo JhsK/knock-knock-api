@@ -12,4 +12,5 @@ export const typeORMConfig: TypeOrmModuleOptions = {
   database: 'knock_knock',
   entities: [__dirname + '/../**/*.entity.{js,ts}'],
   synchronize: true,
+  charset: 'utf8mb4',
 };

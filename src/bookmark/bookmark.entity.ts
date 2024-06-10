@@ -6,8 +6,8 @@ export class Bookmark extends BaseEntity {
   @PrimaryColumn()
   id: number;
 
-  @Column({ name: 'job_title' })
-  jobTitle: string;
+  @Column()
+  title: string;
 
   @Column({ name: 'company_name' })
   companyName: string;
@@ -26,6 +26,9 @@ export class Bookmark extends BaseEntity {
 
   @Column({ name: 'work_experience' })
   workExperience: string;
+
+  @Column()
+  memo: string;
 
   @ManyToOne(() => User, (user) => user.bookmarks)
   user: User;
