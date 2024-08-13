@@ -14,6 +14,7 @@ import { GetUser } from './decorator/get-user.decorator';
 import { LoginRequest } from './dto/request/login.request';
 import { UserService } from './user.service';
 
+const REDIRECT_CLIENT_URL = `${process.env.SERVICE_URL}/login-redirect`;
 const REFRESH_TOKEN_EXPIRES_IN = 7 * 24 * 60 * 60 * 1000; // 7일
 
 @Controller('user')
@@ -40,7 +41,7 @@ export class UserController {
     });
 
     return res.redirect(
-      `${process.env.SERVICE_URL}?accessToken=${userToken.accessToken}`,
+      `${REDIRECT_CLIENT_URL}?accessToken=${userToken.accessToken}`,
     );
   }
 
@@ -68,7 +69,7 @@ export class UserController {
     });
 
     return res.redirect(
-      `${process.env.SERVICE_URL}?accessToken=${userToken.accessToken}`,
+      `${REDIRECT_CLIENT_URL}?accessToken=${userToken.accessToken}`,
     );
   }
 
@@ -95,7 +96,7 @@ export class UserController {
     });
 
     return res.redirect(
-      `${process.env.SERVICE_URL}?accessToken=${userToken.accessToken}`,
+      `${REDIRECT_CLIENT_URL}?accessToken=${userToken.accessToken}`,
     );
   }
 
