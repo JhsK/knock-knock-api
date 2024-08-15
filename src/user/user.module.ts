@@ -16,7 +16,7 @@ import { NaverStrategy } from './strategy/naver.strategy';
     ConfigModule.forRoot(),
     TypeOrmModule.forFeature([User]),
     PassportModule.register({
-      defaultStrategy: ['jwt', 'kakao', 'naver', 'google'],
+      defaultStrategy: ['jwt'],
     }),
     JwtModule.register({
       secret: process.env.JWT_SECRET,

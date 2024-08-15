@@ -16,7 +16,7 @@ export class UserService {
   ) {}
 
   async login(loginRequest: LoginRequest) {
-    const { id, accessToken, name, provider, registerAt } = loginRequest;
+    const { id, name, provider, registerAt } = loginRequest;
 
     return this.dataSource.transaction(async (manager) => {
       const userRepository = manager.getRepository(User);
