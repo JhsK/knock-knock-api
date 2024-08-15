@@ -14,13 +14,15 @@ import { GetUser } from './decorator/get-user.decorator';
 import { LoginRequest } from './dto/request/login.request';
 import { UserService } from './user.service';
 
-const REDIRECT_CLIENT_URL = `${process.env.SERVICE_URL}/login-redirect`;
 const REFRESH_TOKEN_EXPIRES_IN = 7 * 24 * 60 * 60 * 1000; // 7일
 
 @Controller('user')
 export class UserController {
+  private readonly REDIRECT_CLIENT_URL: string;
   private logger = new Logger('UserController');
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService) {
+    this.REDIRECT_CLIENT_URL = `${process.env.SERVICE_URL}/login-redirect`;
+  }
 
   @Get('/kakao-login/callback')
   @UseGuards(AuthGuard('kakao'))
@@ -41,7 +43,7 @@ export class UserController {
     });
 
     return res.redirect(
-      `${REDIRECT_CLIENT_URL}?accessToken=${userToken.accessToken}`,
+      `${this.REDIRECT_CLIENT_URL}?accessToken=${userToken.accessToken}`,
     );
   }
 
@@ -69,7 +71,7 @@ export class UserController {
     });
 
     return res.redirect(
-      `${REDIRECT_CLIENT_URL}?accessToken=${userToken.accessToken}`,
+      `${this.REDIRECT_CLIENT_URL}?accessToken=${userToken.accessToken}`,
     );
   }
 
@@ -96,7 +98,7 @@ export class UserController {
     });
 
     return res.redirect(
-      `${REDIRECT_CLIENT_URL}?accessToken=${userToken.accessToken}`,
+      `${this.REDIRECT_CLIENT_URL}?accessToken=${userToken.accessToken}`,
     );
   }
 
