@@ -5,11 +5,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './user.entity';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
-import { JwtStrategy } from './strategy/jwt.strategy';
+import { JwtStrategy } from './strategy/jwt/jwt.strategy';
 import { ConfigModule } from '@nestjs/config';
 import { GoogleStrategy } from './strategy/google.strategy';
 import { KakaoStrategy } from './strategy/kakao.strategy';
 import { NaverStrategy } from './strategy/naver.strategy';
+import { JwtRefreshTokenStrategy } from './strategy/jwt/refresh.strategy';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { NaverStrategy } from './strategy/naver.strategy';
   providers: [
     UserService,
     JwtStrategy,
+    JwtRefreshTokenStrategy,
     GoogleStrategy,
     KakaoStrategy,
     NaverStrategy,
