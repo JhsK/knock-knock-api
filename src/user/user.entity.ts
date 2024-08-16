@@ -20,6 +20,9 @@ export class User extends BaseEntity {
   @Column()
   nickname: string;
 
+  @Column({ nullable: true })
+  refreshToken?: string;
+
   @Column({ name: 'provider_id', type: 'varchar', length: 255 })
   providerId: string;
 
