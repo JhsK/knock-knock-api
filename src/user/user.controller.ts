@@ -3,6 +3,8 @@ import {
   Get,
   Logger,
   Param,
+  Post,
+  Req,
   Res,
   UseGuards,
   UsePipes,
@@ -13,8 +15,8 @@ import { Response } from 'express';
 import { GetUser } from './decorator/get-user.decorator';
 import { LoginRequest } from './dto/request/login.request';
 import { UserService } from './user.service';
-
-const REFRESH_TOKEN_EXPIRES_IN = 7 * 24 * 60 * 60 * 1000; // 7일
+import { REFRESH_TOKEN_COOKIE_EXPIRES_IN } from 'src/constant';
+import { User } from './user.entity';
 
 @Controller('user')
 export class UserController {
@@ -39,7 +41,7 @@ export class UserController {
     res.cookie('refreshToken', userToken.refreshToken, {
       httpOnly: true,
       secure: false, // https에서만 작동, 필요에 따라 false로 설정
-      maxAge: REFRESH_TOKEN_EXPIRES_IN,
+      maxAge: REFRESH_TOKEN_COOKIE_EXPIRES_IN,
     });
 
     return res.redirect(
@@ -67,7 +69,7 @@ export class UserController {
     res.cookie('refreshToken', userToken.refreshToken, {
       httpOnly: true,
       secure: false, // https에서만 작동, 필요에 따라 false로 설정
-      maxAge: REFRESH_TOKEN_EXPIRES_IN,
+      maxAge: REFRESH_TOKEN_COOKIE_EXPIRES_IN,
     });
 
     return res.redirect(
@@ -94,7 +96,7 @@ export class UserController {
     res.cookie('refreshToken', userToken.refreshToken, {
       httpOnly: true,
       secure: false, // https에서만 작동, 필요에 따라 false로 설정
-      maxAge: REFRESH_TOKEN_EXPIRES_IN,
+      maxAge: REFRESH_TOKEN_COOKIE_EXPIRES_IN,
     });
 
     return res.redirect(
@@ -110,5 +112,13 @@ export class UserController {
   @UseGuards(AuthGuard())
   async getUserById(@Param('id') id: string) {
     console.log(id);
+  }
+
+  @Post('/refresh')
+  @UseGuards(AuthGuard('jwt-refresh'))
+  async refresh(@GetUser() user: User, @Req() req: Request) {
+    const refreshToken = this.userService.refreshAccessToken(user);
+
+    const legacyRefreshToken = req.cookies['refreshToken'];
   }
 }
