@@ -4,6 +4,7 @@ import { DataSource, Repository } from 'typeorm';
 import { User } from './user.entity';
 import { JwtService } from '@nestjs/jwt';
 import { LoginRequest } from './dto/request/login.request';
+import { REFRESH_TOKEN_EXPIRES_IN } from 'src/constant';
 
 @Injectable()
 export class UserService {
@@ -28,8 +29,10 @@ export class UserService {
         const payload = { userId: user.id, provider };
         const accessToken = await this.jwtService.signAsync(payload);
         const refreshToken = await this.jwtService.signAsync(payload, {
-          expiresIn: '7d',
+          expiresIn: REFRESH_TOKEN_EXPIRES_IN,
         });
+
+        await this.userRepository.update(user.id, { refreshToken });
 
         return { accessToken, refreshToken };
       }
@@ -41,7 +44,7 @@ export class UserService {
         registerAt,
       });
 
-      await this.userRepository.save(createUser);
+      const createdUser = await this.userRepository.save(createUser);
 
       const payload = { userId: createUser.id, provider };
       const accessToken = await this.jwtService.signAsync(payload);
@@ -49,10 +52,21 @@ export class UserService {
         expiresIn: '7d',
       });
 
+      await this.userRepository.update(createdUser.id, { refreshToken });
+
       return {
         accessToken,
         refreshToken,
       };
     });
+  }
+
+  async refreshAccessToken(user: User) {
+    const newAccessToken = this.jwtService.sign(
+      { userId: user.id, provider: user.provider },
+      { secret: process.env.JWT_SECRET, expiresIn: REFRESH_TOKEN_EXPIRES_IN },
+    );
+
+    return newAccessToken;
   }
 }
