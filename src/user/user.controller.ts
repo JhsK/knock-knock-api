@@ -11,7 +11,7 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { GetUser } from './decorator/get-user.decorator';
 import { LoginRequest } from './dto/request/login.request';
 import { UserService } from './user.service';
@@ -116,9 +116,24 @@ export class UserController {
 
   @Post('/refresh')
   @UseGuards(AuthGuard('jwt-refresh'))
-  async refresh(@GetUser() user: User, @Req() req: Request) {
+  async refresh(
+    @GetUser() user: User,
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
     const refreshToken = this.userService.refreshAccessToken(user);
 
     const legacyRefreshToken = req.cookies['refreshToken'];
+    if (legacyRefreshToken) {
+      res.clearCookie('refreshToken');
+    }
+
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: false,
+      maxAge: REFRESH_TOKEN_COOKIE_EXPIRES_IN,
+    });
+
+    return res.status(200);
   }
 }
