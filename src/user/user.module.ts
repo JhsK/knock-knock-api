@@ -20,7 +20,7 @@ import { JwtRefreshTokenStrategy } from './strategy/jwt/refresh.strategy';
       defaultStrategy: ['jwt'],
     }),
     JwtModule.register({
-      secret: process.env.JWT_ACCESS_TOKEN_SECRET,
+      secret: process.env.JWT_TOKEN_SECRET,
       signOptions: {
         expiresIn: 60 * 6000,
       },

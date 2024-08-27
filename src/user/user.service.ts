@@ -65,7 +65,7 @@ export class UserService {
     const newAccessToken = this.jwtService.sign(
       { userId: user.id, provider: user.provider },
       {
-        secret: process.env.JWT_ACCESS_TOKEN_SECRET,
+        secret: process.env.JWT_TOKEN_SECRET,
         expiresIn: REFRESH_TOKEN_EXPIRES_IN,
       },
     );

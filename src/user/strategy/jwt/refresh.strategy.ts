@@ -17,29 +17,34 @@ export class JwtRefreshTokenStrategy extends PassportStrategy(
   ) {
     super({
       jwtFromRequest: (req: Request) => {
-        const refreshToken = req?.body?.refreshToken;
+        const refreshToken = req?.cookies['refreshToken'];
+
         if (!refreshToken) {
           return null;
         }
+
         return refreshToken;
       },
-      secretOrKey: process.env.JWT_REFRESH_TOKEN_SECRET,
+      secretOrKey: process.env.JWT_TOKEN_SECRET,
       passReqToCallback: true,
     });
   }
 
   async validate(req: Request, payload) {
-    const { refreshToken } = req.cookies;
-    const { userId } = payload;
+    try {
+      const { refreshToken } = req.cookies;
 
-    const user = await this.userRepository.findOne({
-      where: { id: userId },
-    });
+      const { userId } = payload;
+      const user = await this.userRepository.findOne({ where: { id: userId } });
 
-    if (!user || user.refreshToken !== refreshToken) {
-      throw new UnauthorizedException('Invalid refresh token');
+      if (!user || user.refreshToken !== refreshToken) {
+        throw new UnauthorizedException('Invalid refresh token');
+      }
+
+      return user;
+    } catch (error) {
+      console.error('Validate function error:', error);
+      throw error;
     }
-
-    return user;
   }
 }
