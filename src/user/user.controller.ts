@@ -3,7 +3,6 @@ import {
   Get,
   Logger,
   Param,
-  Post,
   Req,
   Res,
   UseGuards,
@@ -22,6 +21,7 @@ import { User } from './user.entity';
 export class UserController {
   private readonly REDIRECT_CLIENT_URL: string;
   private logger = new Logger('UserController');
+
   constructor(private readonly userService: UserService) {
     this.REDIRECT_CLIENT_URL = `${process.env.SERVICE_URL}/login-redirect`;
   }
@@ -29,10 +29,10 @@ export class UserController {
   @Get('/kakao-login/callback')
   @UseGuards(AuthGuard('kakao'))
   async kakaoCallback(
-    @GetUser() loignRequest: LoginRequest,
+    @GetUser() loginRequest: LoginRequest,
     @Res() res: Response,
   ) {
-    const userToken = await this.userService.login(loignRequest);
+    const userToken = await this.userService.login(loginRequest);
 
     this.logger.verbose(
       `사용자가 카카오 회원가입 또는 로그인을 진행하였습니다`,
@@ -44,14 +44,13 @@ export class UserController {
       maxAge: REFRESH_TOKEN_COOKIE_EXPIRES_IN,
     });
 
-    return res.redirect(
+    res.redirect(
       `${this.REDIRECT_CLIENT_URL}?accessToken=${userToken.accessToken}`,
     );
   }
 
   @Get('/kakao-login')
   @UseGuards(AuthGuard('kakao'))
-  @UsePipes(ValidationPipe)
   async kakaoLogin() {}
 
   @Get('/naver-login/callback')
@@ -72,19 +71,17 @@ export class UserController {
       maxAge: REFRESH_TOKEN_COOKIE_EXPIRES_IN,
     });
 
-    return res.redirect(
+    res.redirect(
       `${this.REDIRECT_CLIENT_URL}?accessToken=${userToken.accessToken}`,
     );
   }
 
   @Get('/naver-login')
   @UseGuards(AuthGuard('naver'))
-  @UsePipes(ValidationPipe)
   async naverLogin() {}
 
   @Get('/google-login/callback')
   @UseGuards(AuthGuard('google'))
-  @UsePipes(ValidationPipe)
   async googleLoginCallback(
     @GetUser() loginRequest: LoginRequest,
     @Res() res: Response,
@@ -99,7 +96,7 @@ export class UserController {
       maxAge: REFRESH_TOKEN_COOKIE_EXPIRES_IN,
     });
 
-    return res.redirect(
+    res.redirect(
       `${this.REDIRECT_CLIENT_URL}?accessToken=${userToken.accessToken}`,
     );
   }
@@ -108,32 +105,32 @@ export class UserController {
   @UseGuards(AuthGuard('google'))
   async googleLogin() {}
 
-  @Get(':id')
-  @UseGuards(AuthGuard())
-  async getUserById(@Param('id') id: string) {
-    console.log(id);
-  }
-
-  @Post('/refresh')
+  @Get('/refresh')
   @UseGuards(AuthGuard('jwt-refresh'))
   async refresh(
     @GetUser() user: User,
     @Req() req: Request,
     @Res() res: Response,
   ) {
-    const refreshToken = this.userService.refreshAccessToken(user);
+    console.log('pass token ? ? ?');
+    // const refreshToken = this.userService.refreshAccessToken(user);
+    // const legacyRefreshToken = req.cookies['refreshToken'];
+    // if (legacyRefreshToken) {
+    //   res.clearCookie('refreshToken');
+    // }
 
-    const legacyRefreshToken = req.cookies['refreshToken'];
-    if (legacyRefreshToken) {
-      res.clearCookie('refreshToken');
-    }
+    // res.cookie('refreshToken', refreshToken, {
+    //   httpOnly: true,
+    //   secure: false,
+    //   maxAge: REFRESH_TOKEN_COOKIE_EXPIRES_IN,
+    // });
 
-    res.cookie('refreshToken', refreshToken, {
-      httpOnly: true,
-      secure: false,
-      maxAge: REFRESH_TOKEN_COOKIE_EXPIRES_IN,
-    });
+    res.send('success');
+  }
 
-    return res.status(200);
+  @Get(':id')
+  @UseGuards(AuthGuard())
+  async getUserById(@Param('id') id: string) {
+    console.log(id);
   }
 }
