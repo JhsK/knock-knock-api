@@ -5,3 +5,10 @@ export interface CreateUser {
 }
 
 export type UserProvider = 'kakao' | 'naver' | 'google';
+
+export interface TokenPayload {
+  userId: number;
+  provider: UserProvider;
+  iat: number;
+  exp: number;
+}
