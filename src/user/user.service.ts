@@ -4,7 +4,10 @@ import { DataSource, Repository } from 'typeorm';
 import { User } from './user.entity';
 import { JwtService } from '@nestjs/jwt';
 import { LoginRequest } from './dto/request/login.request';
-import { REFRESH_TOKEN_EXPIRES_IN } from 'src/constant';
+import {
+  ACCESS_TOKEN_EXPIRES_IN,
+  REFRESH_TOKEN_EXPIRES_IN,
+} from 'src/constant';
 
 @Injectable()
 export class UserService {
@@ -27,7 +30,9 @@ export class UserService {
 
       if (user) {
         const payload = { userId: user.id, provider };
-        const accessToken = await this.jwtService.signAsync(payload);
+        const accessToken = await this.jwtService.signAsync(payload, {
+          expiresIn: ACCESS_TOKEN_EXPIRES_IN,
+        });
         const refreshToken = await this.jwtService.signAsync(payload, {
           expiresIn: REFRESH_TOKEN_EXPIRES_IN,
         });
@@ -66,7 +71,7 @@ export class UserService {
       { userId: user.id, provider: user.provider },
       {
         secret: process.env.JWT_TOKEN_SECRET,
-        expiresIn: REFRESH_TOKEN_EXPIRES_IN,
+        expiresIn: ACCESS_TOKEN_EXPIRES_IN,
       },
     );
 

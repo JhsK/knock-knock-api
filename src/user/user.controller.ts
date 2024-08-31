@@ -51,6 +51,7 @@ export class UserController {
 
   @Get('/kakao-login')
   @UseGuards(AuthGuard('kakao'))
+  @UsePipes(ValidationPipe)
   async kakaoLogin() {}
 
   @Get('/naver-login/callback')
@@ -78,6 +79,7 @@ export class UserController {
 
   @Get('/naver-login')
   @UseGuards(AuthGuard('naver'))
+  @UsePipes(ValidationPipe)
   async naverLogin() {}
 
   @Get('/google-login/callback')
@@ -103,6 +105,7 @@ export class UserController {
 
   @Get('/google-login')
   @UseGuards(AuthGuard('google'))
+  @UsePipes(ValidationPipe)
   async googleLogin() {}
 
   @Get('/refresh')
@@ -112,20 +115,11 @@ export class UserController {
     @Req() req: Request,
     @Res() res: Response,
   ) {
-    console.log('pass token ? ? ?');
-    // const refreshToken = this.userService.refreshAccessToken(user);
-    // const legacyRefreshToken = req.cookies['refreshToken'];
-    // if (legacyRefreshToken) {
-    //   res.clearCookie('refreshToken');
-    // }
+    const accessToken = await this.userService.refreshAccessToken(user);
 
-    // res.cookie('refreshToken', refreshToken, {
-    //   httpOnly: true,
-    //   secure: false,
-    //   maxAge: REFRESH_TOKEN_COOKIE_EXPIRES_IN,
-    // });
-
-    res.send('success');
+    res.json({
+      accessToken,
+    });
   }
 
   @Get(':id')
