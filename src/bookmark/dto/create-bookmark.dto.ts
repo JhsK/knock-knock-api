@@ -1,9 +1,13 @@
-import { IsNotEmpty, IsString, IsUrl } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString, IsUrl } from 'class-validator';
 
 export class CreateBookmarkDto {
   @IsNotEmpty()
   @IsUrl()
   url: string;
+
+  @IsNotEmpty()
+  @IsString()
+  title: string;
 
   @IsNotEmpty()
   @IsString()
@@ -24,6 +28,10 @@ export class CreateBookmarkDto {
   @IsNotEmpty()
   @IsString()
   jobTitle: string;
+
+  @IsOptional()
+  @IsString()
+  memo: string;
 
   @IsNotEmpty()
   @IsString()

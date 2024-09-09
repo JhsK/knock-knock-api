@@ -1,9 +1,15 @@
 import { User } from 'src/user/user.entity';
-import { BaseEntity, Column, Entity, ManyToOne, PrimaryColumn } from 'typeorm';
+import {
+  BaseEntity,
+  Column,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity()
 export class Bookmark extends BaseEntity {
-  @PrimaryColumn()
+  @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
@@ -27,7 +33,7 @@ export class Bookmark extends BaseEntity {
   @Column({ name: 'work_experience' })
   workExperience: string;
 
-  @Column()
+  @Column({ nullable: true })
   memo: string;
 
   @ManyToOne(() => User, (user) => user.bookmarks)
