@@ -1,10 +1,16 @@
 import { ApplicationStatus } from 'src/application-status/application-status.entity';
 import { User } from 'src/user/user.entity';
-import { BaseEntity, Column, Entity, ManyToOne, PrimaryColumn } from 'typeorm';
+import {
+  BaseEntity,
+  Column,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity()
 export class Application extends BaseEntity {
-  @PrimaryColumn()
+  @PrimaryGeneratedColumn()
   id: number;
 
   @Column({ name: 'title' })
@@ -13,7 +19,7 @@ export class Application extends BaseEntity {
   @Column({ name: 'company_name' })
   companyName: string;
 
-  @Column()
+  @Column({ default: 'SUBMITTED' })
   status: string;
 
   @Column({ type: 'date' })
